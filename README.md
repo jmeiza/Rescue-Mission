@@ -9,7 +9,8 @@ This product is an _exploration command center_ for the [Island](https://ace-des
 
 ### Strategy description
 
-The exploration strategy is for now to stop exploring as soon as we start. We stay safe and fly back to base immediately.
+The exploration strategy is to first locate the coast and follow the coast line till a creek is spotted. From there, the drone is programmed to fly towards the middle of the island and spiral out untill it scans
+the emergency site. Once both are located, it flys back to the base with the remaining battery it has left.
 
 ## How to compile, run and deploy
 
