@@ -5,39 +5,21 @@ public class Actions
     String key;
     String value;
     boolean coastFound, creekFound, emergencySiteFound = false;
-    int actCount = 0;
 
-    Coast coast = new Coast();
+    Coast coast = new Coast(this);
+
     Creek creek = new Creek();
     EmergencySite emergencySite = new EmergencySite();
 
     public void search()
     {
-        // example just for now
-        if (actCount == 50)
-        {
-            key = "action";
-            value = "stop";
-        }
-        else if(actCount % 2 == 0)
-        {
-            key = "action";
-            value = "fly";
-        }
-        else
-        {
-            key = "action";
-            value = "scan";
-        }
-        actCount++;
-        /*
+        
         if(!coastFound)
     {
-        // coast.run algorithm...
-        key = "action";
-        value = "fly";
-        actCount++;
+       coast.mainLoop();
     }  
+
+    /*
     else if(!creekFound)
     {
         // creek.run something
@@ -53,6 +35,16 @@ public class Actions
     }    
     */
 
+    }
+
+    public void setKey(String newKey)
+    {
+        this.key = newKey;
+    }
+
+    public void setValue(String newValue)
+    {
+        this.key = newValue;
     }
 
     public String getKey()
