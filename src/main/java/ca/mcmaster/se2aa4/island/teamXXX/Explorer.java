@@ -12,7 +12,10 @@ import eu.ace_design.island.bot.IExplorerRaid;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    Actions action = new Actions();
+    Coordinate coords;
+    Action act;
+    int i = 0;
+    String key, value, parameter; 
 
     @Override
     public void initialize(String s) {
@@ -20,6 +23,9 @@ public class Explorer implements IExplorerRaid {
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
         String direction = info.getString("heading");
+        
+        coords = new Coordinate(direction);
+
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
@@ -29,11 +35,16 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         JSONObject decision = new JSONObject();
 
-        action.search();
-        String key = action.getKey();        
-        String value = action.getValue();
+        // some get info part
 
-        decision.put(key, value);
+        // send to algorithm to see what to do
+
+        // return from algo and do action using checks to see which action
+
+        coords.action(act);
+        i++;
+
+        //coords.printGrid();
 
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
@@ -54,7 +65,6 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String deliverFinalReport() 
     {
-        System.out.println("where is this");
         return "no creek found";
     }
 

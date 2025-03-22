@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class Actions 
+public class Drone 
 {
     String key;
     String value;
@@ -10,6 +10,8 @@ public class Actions
     Coast coast = new Coast();
     Creek creek = new Creek();
     EmergencySite emergencySite = new EmergencySite();
+
+    //Compass whateever = new Compass();
 
     public void search()
     {
@@ -52,6 +54,12 @@ public class Actions
         value = "stop";
     }    
     */
+
+    }
+
+    public void action()
+    {
+        // turn String into Action enum / object
 
     }
 
