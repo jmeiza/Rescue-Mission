@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 /*THIS CLASS IMPLEMENTS THE ALGORITHM THAT FINDS THE ISLAND */
-public class IslandFinder {
+public class IslandFinder{
 
     private final Logger logger = LogManager.getLogger();
 
@@ -58,6 +58,7 @@ public class IslandFinder {
                     else{
                         response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);       /*Turning to where the island is */
                         this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
+                        this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
                     }
 
                     this.state = State.PHASE1_ISLAND_SIGHTED;       /*Changing state */
@@ -79,7 +80,7 @@ public class IslandFinder {
                 if (!data.get(2).equals("NULL")) {
                     this.spots.markCreek(data.get(2), this.drone.getLocation());
                 }
-                response = action.echo(this.drone.getDirection(),Direction.RIGHT);
+                response = action.scan();
                 return response;
             }
             if (distanceToIsland > 0){          /*Call the fly action until you get to the island */

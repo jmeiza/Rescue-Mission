@@ -22,6 +22,10 @@ public class Drone {
         return this.curDir;
     }
 
+    public void setDirection(Direction newDir){
+        this.curDir = newDir;
+    }
+
     public State getPhase(){
         return this.curPhase;
     }

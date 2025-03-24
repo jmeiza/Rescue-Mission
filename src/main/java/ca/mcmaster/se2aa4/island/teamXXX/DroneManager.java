@@ -68,7 +68,6 @@ public class DroneManager {
                 location.updateCoordinate(1, 1);
             }
         }
-        curDir = nextDir;           /*Updating the drone's direction */
     }
 
 

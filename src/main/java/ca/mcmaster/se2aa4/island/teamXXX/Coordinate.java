@@ -10,7 +10,7 @@ public class Coordinate {
         this.xPoint = x;
         this.yPoint = y;
         location[0] = this.xPoint;
-        location[1] = this.xPoint;
+        location[1] = this.yPoint;
     }
 
     public int[] getCoordinate(){
