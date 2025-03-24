@@ -46,4 +46,32 @@ public class Compass {
         }
     }
 
+
+    public Direction nextTurn(Direction curDir, Direction nextDir){
+        if (converter(leftDirection(curDir)) == nextDir){
+            return Direction.LEFT;
+        }
+        else if (converter(rightDirection(curDir)) == nextDir){
+            return Direction.RIGHT;
+        }
+        else{
+            return Direction.FRONT;
+        }
+    }
+
+
+    private Direction converter(String str){
+        if (str.equals("N")){
+            return Direction.NORTH;
+        }
+        else if (str.equals("E")){
+            return Direction.EAST;
+        }
+        else if (str.equals("W")){
+            return Direction.WEST;
+        }
+        else{
+            return Direction.SOUTH;
+        }
+    }
 }

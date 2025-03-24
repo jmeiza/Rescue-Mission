@@ -6,11 +6,14 @@ import org.json.JSONObject;
 
 public class Drone {
 
+    private State curPhase;
     private int battery;
     private Direction curDir;
 
-    public Drone(int battery, String direction){
+    public Drone(int battery, String direction, State state){
         this.battery = battery;
+        this.curPhase = state;
+
         if (direction.equalsIgnoreCase("N")) {
             this.curDir = Direction.NORTH;
         }
@@ -29,6 +32,14 @@ public class Drone {
 
     public Direction getDirection(){
         return this.curDir;
+    }
+
+    public State getPhase(){
+        return this.curPhase;
+    }
+
+    public void updatePhase(State state){
+        this.curPhase = state;
     }
 
 

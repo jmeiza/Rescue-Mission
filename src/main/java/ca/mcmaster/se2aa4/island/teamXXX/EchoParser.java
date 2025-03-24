@@ -6,19 +6,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class EchoParser implements Parser{
-    private JSONObject response;
     private int cost;
     private String found;
     private int range;
 
-    public EchoParser(JSONObject response){
-        this.response = response;
-    }
-
     @Override
-    public Report parse(){
-        JSONObject extras = this.response.getJSONObject("extras");
-        this.cost = this.response.getInt("cost");
+    public Report parse(JSONObject response){
+        JSONObject extras = response.getJSONObject("extras");
+        this.cost = response.getInt("cost");
         this.range = extras.getInt("range");
         this.found = extras.getString("found");
 

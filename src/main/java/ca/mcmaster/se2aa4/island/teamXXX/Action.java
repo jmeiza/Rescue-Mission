@@ -33,12 +33,10 @@ public class Action {
         if (next == Direction.LEFT){
             parameters.put("direction",side.leftDirection(cur));
         }
-        else if (next == Direction.RIGHT){
+        else {
             parameters.put("direction",side.rightDirection(cur));
         }
-        else{
-            parameters.put("direction",side.frontDirection(cur));
-        }
+        
 
         decision = new JSONObject();
         decision.put("action","heading");

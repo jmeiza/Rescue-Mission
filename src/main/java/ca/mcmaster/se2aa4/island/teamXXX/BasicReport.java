@@ -14,7 +14,7 @@ public class BasicReport implements Report {
         List<String> output = new ArrayList<>();
 
         output.add(String.valueOf(this.cost));
-        output.add(" ");
+        output.add("NULL");
 
         return output;
     }

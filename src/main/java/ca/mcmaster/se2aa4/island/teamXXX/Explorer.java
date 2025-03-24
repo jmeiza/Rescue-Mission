@@ -1,5 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.logging.log4j.LogManager;
@@ -8,24 +9,26 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import eu.ace_design.island.bot.IExplorerRaid;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.BasicParser;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.BasicReport;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.Drone;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.EchoParser;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.IslandFinder;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.Report;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.ScanParser;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.Operation;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Parser;
+import main.java.ca.mcmaster.se2aa4.island.teamXXX.POIFinder;
+import main.java.ca.mcmaster.se2aa4.island.teamXXX.ReportReader;
+import main.java.ca.mcmaster.se2aa4.island.teamXXX.State;
 
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
+
     private Drone drone;
-    private Report report = new BasicReport(2);
-    private Operation lastOp;
-    private Parser parser;
     private IslandFinder islandFinder;
+    private POIFinder poiFinder;
+
+    private Operation lastOp = Operation.FLY;
+    private Report report = new BasicReport(0);
+    private ReportReader reader = new ReportReader();
 
     @Override
     public void initialize(String s) {
@@ -35,16 +38,22 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
 
-        drone = new Drone(batteryLevel, direction);
+        drone = new Drone(batteryLevel, direction, State.PHASE1);
         islandFinder = new IslandFinder(drone);
+        poiFinder = new POIFinder(drone);
 
-        // logger.info("The drone is facing {}", direction);
-        // logger.info("Battery level is {}", batteryLevel);
     }
 
     @Override
     public String takeDecision() {
-        JSONObject decision = islandFinder.find(report);
+        JSONObject decision = new JSONObject();
+        if (drone.getPhase() == State.PHASE1){
+            decision = islandFinder.find(report,lastOp);
+        }
+        else{
+            decision = poiFinder.find(report, lastOp);
+        }
+        
 
         String action = decision.getString("action");
         if(action.equals("scan")){lastOp = Operation.SCAN;}
@@ -54,34 +63,12 @@ public class Explorer implements IExplorerRaid {
         else {lastOp = Operation.STOP;}
 
         return decision.toString();
-
-        // JSONObject decision = new JSONObject();
-        // decision.put("action", "stop"); // we stop the exploration immediately
-        // logger.info("** Decision: {}",decision.toString());
-        // return decision.toString();
     }   
 
     @Override
     public void acknowledgeResults(String s) {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        if (lastOp == Operation.ECHO){
-            parser = new EchoParser(response);
-        }
-        else if (lastOp == Operation.SCAN){
-            parser = new ScanParser(response);
-        }
-        else {
-            parser = new BasicParser(response);
-        }
-        
-        report = parser.parse();
-    //     logger.info("** Response received:\n"+response.toString(2));
-    //     Integer cost = response.getInt("cost");
-    //     logger.info("The cost of the action was {}", cost);
-    //     String status = response.getString("status");
-    //     logger.info("The status of the drone is {}", status);
-    //     JSONObject extraInfo = response.getJSONObject("extras");
-    //     logger.info("Additional information received: {}", extraInfo);
+        report = reader.read(response,lastOp);
     }
 
     @Override

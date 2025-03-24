@@ -9,11 +9,15 @@ import org.json.JSONObject;
 public class IslandFinder {
 
     private final Logger logger = LogManager.getLogger();
+
     private Drone drone;
-    private Operation lastOp = Operation.FLY;
-    private State state = State.ISLAND_SEARCH;
+
+    private State state = State.PHASE1_ISLAND_SEARCH;
+
     private Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
-    private int echoCount = 0;
+
+    private int echoCounter = 0;
+
     private int distanceToIsland;
 
 
@@ -21,17 +25,16 @@ public class IslandFinder {
         this.drone = drone;
     }
     
-    public JSONObject find(Report report) {
+    public JSONObject find(Report report, Operation lastOp) {
         List<String> data = report.getInfo();
         Action action = new Action();
         JSONObject response;
         
-        if (this.state == State.ISLAND_SEARCH){
+        if (this.state == State.PHASE1_ISLAND_SEARCH){
 
-            if (this.lastOp == Operation.HEADING || this.lastOp == Operation.FLY){
-                this.lastOp = Operation.ECHO;
-                response = action.echo(this.drone.getDirection(), next[echoCount%3]);
-                echoCount ++;
+            if (lastOp == Operation.HEADING || lastOp == Operation.FLY){
+                response = action.echo(this.drone.getDirection(), next[echoCounter%3]);
+                echoCounter ++;
                 return response;
             }
 
@@ -39,31 +42,29 @@ public class IslandFinder {
                 /*Turn towards the Ground that*/
                 if (data.get(2).equals("GROUND")){
                     this.distanceToIsland = Integer.parseInt(data.get(1));
-                    this.lastOp = Operation.HEADING;
-                    response = action.heading(this.drone.getDirection(),next[(echoCount-1)%3]);
+                    response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);
                 
                     this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
-                    this.state = State.ISLAND_FOUND;
+                    this.state = State.PHASE1_ISLAND_SIGHTED;
                     return response;
                 }
-                this.lastOp = Operation.FLY;
                 response = action.fly();
                 return response;
             }
         }
         else{
-            if (this.lastOp == Operation.SCAN && data.get(1).equals("FOUND")){
+            if (lastOp == Operation.SCAN && data.get(1).equals("FOUND")){
                 logger.info("** The island has been found!!");
-                return action.stop();
+                this.drone.updatePhase(State.PHASE2);
+                response = action.scan();
+                return response;
             }
             if (distanceToIsland > 0){
-                this.lastOp = Operation.FLY;
                 response = action.fly();
                 distanceToIsland --;
                 return response;
             }
             else{
-                this.lastOp = Operation.SCAN;
                 response = action.scan();
                 return response;
             }

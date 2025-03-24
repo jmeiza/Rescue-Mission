@@ -6,15 +6,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class ScanParser implements Parser{
-    private JSONObject response;
-
-    public ScanParser(JSONObject response){
-        this.response = response;
-    }
-
+    
     @Override
-    public Report parse() {
-        JSONObject extras = this.response.getJSONObject("extras");
+    public Report parse(JSONObject response) {
+        JSONObject extras = response.getJSONObject("extras");
         String biome = "OCEAN";
         
         /*Parsing the biomes*/
@@ -44,7 +39,7 @@ public class ScanParser implements Parser{
         else{ 
             siteId = "NULL";        
         }
-        Report output = new ScanReport(this.response.getInt("cost"), biome, creekId, siteId);
+        Report output = new ScanReport(response.getInt("cost"), biome, creekId, siteId);
 
         return output;
     }
