@@ -18,6 +18,10 @@ public class POI {
         return this.creek.getId();
     }
 
+    public String getSiteId(){
+        return this.site.getId();
+    }
+
     public int[] getCreekLocation(){
         return this.creek.getLocation();
     }

@@ -26,6 +26,7 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private IslandFinder islandFinder;
     private POIFinder poiFinder;
+    private POI spots;
 
     private Operation lastOp = Operation.FLY;
     private Report report = new BasicReport(0);
@@ -40,7 +41,7 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(batteryLevel, direction, State.PHASE1);
-        POI spots = new POI();
+        spots = new POI();
         islandFinder = new IslandFinder(drone, spots);
         poiFinder = new POIFinder(drone, spots);
 
@@ -75,9 +76,9 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() 
-    {
+    {   
         System.out.println("Island found");
-        return "no creek found";
+        return "CreekId: " + spots.getCreekId() + "EmeregencySite: " + spots.getSiteId();
     }
 
 }

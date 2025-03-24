@@ -3,8 +3,6 @@ package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 import org.json.JSONObject;
 import java.util.List;
 
-import javax.swing.Action;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +21,7 @@ public class POIFinder {
 
     private Direction nextTurn;
 
-    private Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
+    private Direction[] nextEcho = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
 
     private int echoCounter = 1;
 
@@ -39,6 +37,14 @@ public class POIFinder {
         List<String> data = report.getInfo();
         Action action = new Action();
         JSONObject response;
+
+        /*Applying the cost of the last action to the batter */
+        this.drone.updateBattery(Integer.parseInt(data.get(0)));
+
+        if (this.drone.getBattery() < 25){
+            logger.info("** Drone battery died before exploration finished");
+            return action.stop();
+        }
 
         if (phase == State.PHASE2_START){
             /*If we have found what direction the island is in, we start flying and switch over to the
@@ -57,7 +63,7 @@ public class POIFinder {
              * in the other directions until we find the island
              */
             else {
-                response = action.echo(this.drone.getDirection(), next[echoCounter%3]);
+                response = action.echo(this.drone.getDirection(), nextEcho[echoCounter%3]);
                 echoCounter++;
                 lastDirection = converter(response.getJSONObject("parameters").getString("direction"));
                 return response;
@@ -80,11 +86,12 @@ public class POIFinder {
                     if (!data.get(3).equals("NULL")){
                         this.spots.markSite(data.get(3), this.drone.getLocation());
                         logger.info("** Emergency site found");
+                        logger.info("** Battery level: {}",this.drone.getBattery());
                         return action.stop();
                     }
                     if (data.get(1).equals("OCEAN")){
                         this.state = State.PHASE2_ON_EDGE;
-                        response = action.echo(this.drone.getDirection(), next[0]);
+                        response = action.echo(this.drone.getDirection(), nextEcho[0]);
                         return response;
                     }
                     else{

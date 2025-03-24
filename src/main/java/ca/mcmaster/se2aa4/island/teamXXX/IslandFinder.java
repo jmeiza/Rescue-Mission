@@ -1,6 +1,5 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
-
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +31,9 @@ public class IslandFinder {
         List<String> data = report.getInfo();
         Action action = new Action();
         JSONObject response;
+
+        /*Applying cost of previous action on the drone's battery */
+        this.drone.updateBattery(Integer.parseInt(data.get(0)));
         
         if (this.state == State.PHASE1_ISLAND_SEARCH){
 

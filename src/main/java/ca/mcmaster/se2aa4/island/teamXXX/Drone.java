@@ -13,7 +13,7 @@ public class Drone {
     private int battery;
     private Direction curDir;
     private Coordinate location;
-    private DroneManager manager;
+    private DroneManager manager = new DroneManager();
 
     public Drone(int battery, String direction, State state){
         this.battery = battery;
@@ -44,6 +44,10 @@ public class Drone {
 
     public void updateBattery(int cost){
         this.battery -= cost;
+    }
+
+    public int getBattery(){
+        return this.battery;
     }
 
     public void flyUpdateLocation(){
