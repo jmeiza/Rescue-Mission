@@ -2,6 +2,9 @@ package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
 import org.json.JSONObject;
 import java.util.List;
+
+import javax.swing.Action;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,6 +12,8 @@ public class POIFinder {
     private final Logger logger = LogManager.getLogger();
 
     private Drone drone;
+
+    private POI spots;
 
     private Compass compass = new Compass();
 
@@ -24,7 +29,8 @@ public class POIFinder {
 
     private Direction lastDirection;
 
-    public POIFinder(Drone drone){
+    public POIFinder(Drone drone, POI spots){
+        this.spots = spots;
         this.drone = drone;
         this.lastDirection = drone.getDirection();
     }
@@ -43,6 +49,7 @@ public class POIFinder {
                 nextTurn = compass.nextTurn(this.drone.getDirection(), lastDirection);
                 phase = State.PHASE2_POI_SEARCH;
                 response = action.fly();
+                this.drone.flyUpdateLocation();
                 return response;
              
             }
@@ -56,7 +63,6 @@ public class POIFinder {
                 return response;
             }
         }
-
         else{
             /*The drone is currently within the island zone */
             if (this.state == State.PHASE2_IN_BOUND){
@@ -65,16 +71,14 @@ public class POIFinder {
 
                     if (!data.get(2).equals("NULL")){
                         logger.info("** Creek found");
-                        /*CREEK FOUND
-                         * STORE THE CREEK ID
-                         * STORE THE COORDINATE
-                         */
+
+                        this.spots.markCreek(data.get(2), this.drone.getLocation());
+
+                        this.drone.flyUpdateLocation();         /*Updating the drone's coordinates */
                         return action.fly();
                     }
                     if (!data.get(3).equals("NULL")){
-                        /*SITE FOUND
-                         * STORE THE COORDINATE
-                         */
+                        this.spots.markSite(data.get(3), this.drone.getLocation());
                         logger.info("** Emergency site found");
                         return action.stop();
                     }
@@ -85,6 +89,7 @@ public class POIFinder {
                     }
                     else{
                         response = action.fly();
+                        this.drone.flyUpdateLocation();     /*Updating the drone's coordinates */
                         return response;
                     }
                 }
@@ -94,17 +99,21 @@ public class POIFinder {
                 }
                 //Might need to add an echo elif statement to just sense for out of range
             }
-
             else if(this.state == State.PHASE2_ON_EDGE){
 
                 if (lastOp == Operation.ECHO && data.get(2).equals("OUT_OF_RANGE")){
                     this.state = State.PHASE2_OUT_OF_BOUND;
                     response = action.heading(this.drone.getDirection(), nextTurn);
+
+                    this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
+
                     this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+
                     return response;
                 }
                 else{
                     response = action.fly();
+                    this.drone.flyUpdateLocation();
                     this.state = State.PHASE2_IN_BOUND;
                     return response;
                 }
@@ -112,19 +121,23 @@ public class POIFinder {
 
             else{
                 response = action.heading(this.drone.getDirection(), nextTurn);
+
+                this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));
+
                 this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+
                 if (nextTurn == Direction.LEFT){
                     nextTurn = Direction.RIGHT;
                 }
                 else{
                     nextTurn = Direction.LEFT;
                 }
+
                 this.state = State.PHASE2_ON_EDGE;
                 return response;
             }
         }
-    }
-           
+    }        
     private Direction converter(String str){
         if (str.equals("N")){
             return Direction.NORTH;
@@ -139,19 +152,5 @@ public class POIFinder {
             return Direction.SOUTH;
         }
     }
-
-
 }
 
-
-/*1) Echo to know what direction the island is in
- * 2) if the island is to the left: first turn is left
- * if the island is to the right: first turn is right
- * 
- * 
- * if we are facing east/west when we found the island: our first move should be a turn to 
- * if we are facing north/south when we fund the island: our first move should be to fly forward
- * 
- * How to know when to turn:
- * if you scan and see water or if you echo forward and see out of range
- */

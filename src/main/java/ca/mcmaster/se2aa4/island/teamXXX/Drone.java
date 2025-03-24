@@ -2,6 +2,9 @@ package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.MBeanAttributeInfo;
+
 import org.json.JSONObject;
 
 public class Drone {
@@ -9,21 +12,14 @@ public class Drone {
     private State curPhase;
     private int battery;
     private Direction curDir;
+    private Coordinate location;
+    private DroneManager manager;
 
     public Drone(int battery, String direction, State state){
         this.battery = battery;
         this.curPhase = state;
-
-        if (direction.equalsIgnoreCase("N")) {
-            this.curDir = Direction.NORTH;
-        }
-        else if (direction.equalsIgnoreCase("E")){
-            this.curDir = Direction.EAST;
-        }
-        else if (direction.equalsIgnoreCase("W")){
-            this.curDir = Direction.WEST;
-        }
-        else {this.curDir = Direction.SOUTH;}
+        this.curDir = manager.startDirection(direction);
+        this.location = new Coordinate(0,0);
     }
 
     public void setDirection(Direction dir){
@@ -40,6 +36,22 @@ public class Drone {
 
     public void updatePhase(State state){
         this.curPhase = state;
+    }
+
+    public int[] getLocation(){
+        return location.getCoordinate();
+    }
+
+    public void updateBattery(int cost){
+        this.battery -= cost;
+    }
+
+    public void flyUpdateLocation(){
+        manager.flyUpdateLocation(this.curDir, this.location);
+    }
+
+    public void turnUpdateLocation(Direction nextDir){
+        manager.turnUpdateLocation(this.curDir, nextDir, this.location);
     }
 
 

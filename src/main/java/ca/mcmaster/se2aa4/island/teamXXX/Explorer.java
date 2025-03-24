@@ -17,6 +17,7 @@ import main.java.ca.mcmaster.se2aa4.island.teamXXX.Operation;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.POIFinder;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.ReportReader;
 import main.java.ca.mcmaster.se2aa4.island.teamXXX.State;
+import main.java.ca.mcmaster.se2aa4.island.teamXXX.POI;
 
 public class Explorer implements IExplorerRaid {
 
@@ -39,8 +40,9 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(batteryLevel, direction, State.PHASE1);
-        islandFinder = new IslandFinder(drone);
-        poiFinder = new POIFinder(drone);
+        POI spots = new POI();
+        islandFinder = new IslandFinder(drone, spots);
+        poiFinder = new POIFinder(drone, spots);
 
     }
 
