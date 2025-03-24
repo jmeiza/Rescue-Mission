@@ -10,6 +10,7 @@ public class EchoParser implements Parser{
     private int cost;
     private String found;
     private int range;
+    private Report output;
 
     @Override
     public Report parse(JSONObject response){
@@ -18,7 +19,7 @@ public class EchoParser implements Parser{
         this.range = extras.getInt("range");
         this.found = extras.getString("found");
 
-        Report output = new EchoReport(this.cost, this.range, this.found);
+        output = new EchoReport(this.cost, this.range, this.found);
         
         return output;
     }

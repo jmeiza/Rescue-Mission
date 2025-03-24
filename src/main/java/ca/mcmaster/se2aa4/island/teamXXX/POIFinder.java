@@ -8,6 +8,10 @@ import org.apache.logging.log4j.Logger;
 /* This class implements the algorithm used to find the creek and the emrgency site on the island */
 public class POIFinder {
     private final Logger logger = LogManager.getLogger();
+    
+    private Action action;
+
+    private JSONObject response;
 
     private Drone drone;
 
@@ -21,18 +25,14 @@ public class POIFinder {
 
     private Direction nextTurn = Direction.RIGHT;             /*This field holds what direction the drone should turn next with respect to it's current direction */
 
-    private Direction lastDirection;
-
     public POIFinder(Drone drone, POI spots){
         this.spots = spots;
         this.drone = drone;
-        this.lastDirection = drone.getDirection();
     }
 
     public JSONObject find(Report report, Operation lastOp){
         List<String> data = report.getInfo();
-        Action action = new Action();
-        JSONObject response;
+        action = new Action();
 
         /*Applying the cost of the last action to the battery of the drone */
         this.drone.updateBattery(Integer.parseInt(data.get(0)));
@@ -60,7 +60,6 @@ public class POIFinder {
             else {
                 nextTurn = compass.swap(nextTurn);
                 response = action.echo(this.drone.getDirection(), nextTurn);
-                lastDirection = converter(response.getJSONObject("parameters").getString("direction"));
                 return response;
             }
         }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * THE REPSONSE OF THE SCAN OPERATION
  */
 public class ScanParser implements Parser{
+    private Report output;
     
     @Override
     public Report parse(JSONObject response) {
@@ -42,7 +43,7 @@ public class ScanParser implements Parser{
         else{ 
             siteId = "NULL";        
         }
-        Report output = new ScanReport(response.getInt("cost"), biome, creekId, siteId);
+        output = new ScanReport(response.getInt("cost"), biome, creekId, siteId);
 
         return output;
     }

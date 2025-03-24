@@ -10,6 +10,8 @@ public class IslandFinder {
 
     private final Logger logger = LogManager.getLogger();
 
+    private Action action;
+
     private Drone drone;
 
     private POI spots;
@@ -30,7 +32,7 @@ public class IslandFinder {
     
     public JSONObject find(Report report, Operation lastOp) {
         List<String> data = report.getInfo();
-        Action action = new Action();
+        action = new Action();
         JSONObject response;
 
         /*Applying cost of previous action on the drone's battery */
