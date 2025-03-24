@@ -5,12 +5,15 @@ import org.json.JSONArray;
 import java.util.List;
 import java.util.ArrayList;
 
+/*THIS CLASS IS RESPONSIBLE FOR IMPLEMENTING THE MECHANISM FOR PARSING 
+ * THE REPSONSE OF THE SCAN OPERATION
+ */
 public class ScanParser implements Parser{
     
     @Override
     public Report parse(JSONObject response) {
         JSONObject extras = response.getJSONObject("extras");
-        String biome = "OCEAN";
+        String biome = "OCEAN";         /*Default biome is OCEAN since we start out in the ocean */
         
         /*Parsing the biomes*/
         JSONArray biomes = extras.getJSONArray("biomes");

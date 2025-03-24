@@ -1,29 +1,21 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.MBeanAttributeInfo;
-
 import org.json.JSONObject;
 
+/*THIS CLASS HOLDS ALL NECESSARY INFORMATION ABOUT THE DRONE */
 public class Drone {
 
     private State curPhase;
     private int battery;
     private Direction curDir;
     private Coordinate location;
-    private DroneManager manager = new DroneManager();
+    private DroneManager manager = new DroneManager();      /*This objects manages some operations for the drone */
 
     public Drone(int battery, String direction, State state){
         this.battery = battery;
         this.curPhase = state;
         this.curDir = manager.startDirection(direction);
         this.location = new Coordinate(0,0);
-    }
-
-    public void setDirection(Direction dir){
-        this.curDir = dir;
     }
 
     public Direction getDirection(){

@@ -1,6 +1,6 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
-
+/*THIS CLASS STORES INFORMATION ABOUT THE CREEK */
 public class Creek {
     private String creekId;
     private Coordinate location;

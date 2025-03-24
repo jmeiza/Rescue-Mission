@@ -1,8 +1,9 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
-
+/*THIS CLASS IS USED TO UPDATE FIELDS OF A DRONE */
 public class DroneManager {
     
+    /*This method is used to assign the starting direction of the drone */
     public Direction startDirection(String direction){
         if (direction.equalsIgnoreCase("N")) {
             return Direction.NORTH;
@@ -18,6 +19,7 @@ public class DroneManager {
         }
 
     }
+    /*This method is used to update the coordinates of the drone after it flies */
     public void flyUpdateLocation(Direction dir, Coordinate location){
         if (dir == Direction.NORTH){
             location.updateCoordinate(0, -1);
@@ -32,7 +34,7 @@ public class DroneManager {
             location.updateCoordinate(0, 1);
         }
     }
-
+    /*This method is used to update the coordinates of the drone after it makes a turn */
     public void turnUpdateLocation(Direction curDir, Direction nextDir, Coordinate location){
         if (curDir == Direction.NORTH){
             if (nextDir == Direction.EAST){
@@ -66,6 +68,7 @@ public class DroneManager {
                 location.updateCoordinate(1, 1);
             }
         }
+        curDir = nextDir;           /*Updating the drone's direction */
     }
 
 

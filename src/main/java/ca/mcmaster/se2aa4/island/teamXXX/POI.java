@@ -1,13 +1,16 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
+import java.util.ArrayList;
+import java.util.List;
 
+/*THIS CLASS STORES INFORMATION ABOUT THE POINTS OF INTERESTS */
 public class POI {
-    private Creek creek;
+    private List<Creek> creeks = new ArrayList<>();
     private EmergencySite site;
 
 
     public void markCreek(String id, int[] location){
-        this.creek = new Creek(id, location);
+        this.creeks.add(new Creek(id, location));
     }
 
     public void markSite(String id, int[] location){
@@ -15,7 +18,7 @@ public class POI {
     }
 
     public String getCreekId(){
-        return this.creek.getId();
+        return this.creeks.get(0).getId();
     }
 
     public String getSiteId(){
@@ -23,7 +26,7 @@ public class POI {
     }
 
     public int[] getCreekLocation(){
-        return this.creek.getLocation();
+        return this.creeks.get(0).getLocation();
     }
 
     public int[] getSiteLocation(){

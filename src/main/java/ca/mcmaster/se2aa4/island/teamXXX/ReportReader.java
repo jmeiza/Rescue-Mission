@@ -2,6 +2,9 @@ package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
 import org.json.JSONObject;
 
+/*THIS CLASS IS REPSONSIBLE FOR CALLING A SPECIFIC FORM OF PARSER BASED ON THE LAST 
+ * OPERATION TO BE PERFORMED
+ */
 public class ReportReader {
     private Parser parser;
 

@@ -1,7 +1,9 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
+/*THIS CLASS HANDLES EVEYRTHIGN RELATED TO DIRECTION */
 public class Compass {
     
+    /*This method returns the same cardinality of whatever cardinality it is fed */
     public String frontDirection(Direction dir){
         if (dir == Direction.EAST){
             return "E";
@@ -16,6 +18,8 @@ public class Compass {
             return "S";
         }
     }
+
+    /*This method returns the left cardinality of whatever cardinality it is fed */
     public String leftDirection(Direction dir){
         if (dir == Direction.EAST){
             return "N";
@@ -31,6 +35,7 @@ public class Compass {
         }
     }
 
+    /*This method returns the rights cardinality of whatever cardinality it is fed */
     public String rightDirection(Direction dir){
         if (dir == Direction.EAST){
             return "S";
@@ -46,32 +51,13 @@ public class Compass {
         }
     }
 
-
-    public Direction nextTurn(Direction curDir, Direction nextDir){
-        if (converter(leftDirection(curDir)) == nextDir){
-            return Direction.LEFT;
-        }
-        else if (converter(rightDirection(curDir)) == nextDir){
+    /*This method just swaps relative direction from left to right and vice versa */
+    public Direction swap(Direction dir){
+        if (dir == Direction.LEFT){
             return Direction.RIGHT;
         }
         else{
-            return Direction.FRONT;
-        }
-    }
-
-
-    private Direction converter(String str){
-        if (str.equals("N")){
-            return Direction.NORTH;
-        }
-        else if (str.equals("E")){
-            return Direction.EAST;
-        }
-        else if (str.equals("W")){
-            return Direction.WEST;
-        }
-        else{
-            return Direction.SOUTH;
+            return Direction.LEFT;
         }
     }
 }

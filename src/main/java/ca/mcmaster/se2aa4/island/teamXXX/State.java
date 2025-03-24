@@ -1,25 +1,21 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
 public enum State {
-    PHASE1,
+    PHASE1,     /*Rperesents looking for the island */
 
-    PHASE2,
+    PHASE2,     /*Represents searching the island for the POI */
 
-    PHASE1_ISLAND_SEARCH,
+    PHASE1_ISLAND_SEARCH,   /*A section of PHASE1 where we are still echoing to find GROUND */
 
-    PHASE1_ISLAND_SIGHTED, 
+    PHASE1_ISLAND_SIGHTED,  /*A section of PHASE1. The direction of GROUND has been seen and the drone is just flying towards it */
 
-    PHASE2_POI_SEARCH,
+    PHASE2_POI_SEARCH,      /*A section of PHASE2. Currently looking for the creek and emergency site */
 
-    PHASE2_START,
+    PHASE2_START,           /*First part of PHASE2. Figuring out what direction the first turn should be in */
 
-    PHASE2_IN_BOUND,
+    PHASE2_IN_BOUND,        /*A state describing that drone is still directly above the island */
 
-    PHASE2_ON_EDGE,
+    PHASE2_ON_EDGE,         /*The drone is on the edge of the island */
 
-    PHASE2_OUT_OF_BOUND,
-
-    PHASE2_HALF_TURN,
-
-    PHASE2_FULL_TURN
+    PHASE2_OUT_OF_BOUND,    /*The drone is no longer above the island */
 }

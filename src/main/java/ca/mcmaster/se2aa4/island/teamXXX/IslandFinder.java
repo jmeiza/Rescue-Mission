@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+/*THIS CLASS IMPLEMENTS THE ALGORITHM THAT FINDS THE ISLAND */
 public class IslandFinder {
 
     private final Logger logger = LogManager.getLogger();
@@ -37,23 +38,27 @@ public class IslandFinder {
         
         if (this.state == State.PHASE1_ISLAND_SEARCH){
 
-            if (lastOp == Operation.HEADING || lastOp == Operation.FLY){
+            if (lastOp == Operation.HEADING || lastOp == Operation.FLY){        /*After every done movement, echo in one direction */
                 response = action.echo(this.drone.getDirection(), next[echoCounter%3]);
                 echoCounter ++;
                 return response;
             }
-
             else {
-                /*Turn towards the direction where the island was spotted*/
-                if (data.get(2).equals("GROUND")){
-                    this.distanceToIsland = Integer.parseInt(data.get(1));
-                    response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);
+                
+                if (data.get(2).equals("GROUND")){          /*This means the island has been found */
 
-                    this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
+                    this.distanceToIsland = Integer.parseInt(data.get(1));      /*Distance from where the drone is to where the island is */
 
-                    this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+                    if (next[(echoCounter-1)%3] == Direction.FRONT){    /*If we are already facing the island, just keep flying */
+                        response = action.fly();
+                        this.drone.flyUpdateLocation();
+                    }
+                    else{
+                        response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);       /*Turning to where the island is */
+                        this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
+                    }
 
-                    this.state = State.PHASE1_ISLAND_SIGHTED;
+                    this.state = State.PHASE1_ISLAND_SIGHTED;       /*Changing state */
                     return response;
                 }
                 /*Keeping moving forward if the direction of the island has not been found */
@@ -62,17 +67,17 @@ public class IslandFinder {
                 return response;
             }
         }
+        
         else{
-            if (lastOp == Operation.SCAN && data.get(1).equals("FOUND")){
+            if (lastOp == Operation.SCAN && data.get(1).equals("FOUND")){       /*Checks if the drone is finally above the island. If it is, move to Phase 2 */
                 logger.info("** The island has been found!!");
-                this.drone.updatePhase(State.PHASE2);
+                this.drone.updatePhase(State.PHASE2);       /*Update the phase of the drone */
 
                 /*Records the creek if one was found */
                 if (!data.get(2).equals("NULL")) {
                     this.spots.markCreek(data.get(2), this.drone.getLocation());
                 }
-
-                response = action.scan();
+                response = action.echo(this.drone.getDirection(),Direction.RIGHT);
                 return response;
             }
             if (distanceToIsland > 0){          /*Call the fly action until you get to the island */

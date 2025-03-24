@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import java.util.List;
 import java.util.ArrayList;
 
+/*THIS CLASS IS USED TO PARSE THE RESPONSE OF AN ECHO OPERATION */
 public class EchoParser implements Parser{
     private int cost;
     private String found;

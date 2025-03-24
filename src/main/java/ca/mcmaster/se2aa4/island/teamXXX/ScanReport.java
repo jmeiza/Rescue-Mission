@@ -3,6 +3,7 @@ package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 import java.util.ArrayList;
 import java.util.List;
 
+/*THIS CLASS HOLD THE RESPONSE OF A SCAN OPERATION */
 public class ScanReport implements Report{
     private int cost;
     private String creekId;
