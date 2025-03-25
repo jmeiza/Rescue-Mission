@@ -16,6 +16,8 @@ public class IslandFinder{
 
     private POI spots;
 
+    private Compass compass = new Compass();
+
     private State state = State.PHASE1_ISLAND_SEARCH;
 
     private Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
@@ -24,29 +26,59 @@ public class IslandFinder{
 
     private int distanceToIsland;
 
+    private JSONObject response;
+
 
     public IslandFinder(Drone drone, POI spots){
         this.drone = drone;
         this.spots = spots;
     }
+
+    public JSONObject fixStartingPosition(Report report, Operation lastOp){
+        List<String> data = report.getInfo();
+        action = new Action();
+
+        if (lastOp == Operation.NONE){
+            response = action.echo(this.drone.getDirection(), next[echoCounter%3]);
+            echoCounter++;
+        }
+        else{
+            if (Integer.parseInt(data.get(1)) < 20 && data.get(2).equals("OUT_OF_RANGE")){
+                response = action.echo(this.drone.getDirection(),next[echoCounter%3]);
+                echoCounter++;
+            }
+            else{
+                if ((echoCounter-1)%3 == 0){
+                    response = action.fly();
+                }
+                else if ((echoCounter-1)%3 == 1){
+                    response = action.heading(this.drone.getDirection(),next[1]);
+                }
+                else {
+                    response = action.heading(this.drone.getDirection(), next[2]);
+                }
+                this.drone.updatePhase(State.PHASE1);
+                echoCounter = 0;
+            }
+        }
+        return response;
+    }
     
     public JSONObject find(Report report, Operation lastOp) {
         List<String> data = report.getInfo();
         action = new Action();
-        JSONObject response;
 
         /*Applying cost of previous action on the drone's battery */
         this.drone.updateBattery(Integer.parseInt(data.get(0)));
         
         if (this.state == State.PHASE1_ISLAND_SEARCH){
 
-            if (lastOp == Operation.HEADING || lastOp == Operation.FLY){        /*After every done movement, echo in one direction */
+            if (lastOp == Operation.HEADING || lastOp == Operation.FLY || lastOp == Operation.NONE){     /*After every movement, echo in one direction */
                 response = action.echo(this.drone.getDirection(), next[echoCounter%3]);
                 echoCounter ++;
                 return response;
             }
-            else {
-                
+            else { 
                 if (data.get(2).equals("GROUND")){          /*This means the island has been found */
 
                     this.distanceToIsland = Integer.parseInt(data.get(1));      /*Distance from where the drone is to where the island is */
@@ -58,12 +90,12 @@ public class IslandFinder{
                     else{
                         response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);       /*Turning to where the island is */
                         this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
-                        this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+                        //this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
                     }
-
                     this.state = State.PHASE1_ISLAND_SIGHTED;       /*Changing state */
                     return response;
                 }
+                
                 /*Keeping moving forward if the direction of the island has not been found */
                 response = action.fly();
                 this.drone.flyUpdateLocation();
@@ -73,13 +105,13 @@ public class IslandFinder{
         
         else{
             if (lastOp == Operation.SCAN && data.get(1).equals("FOUND")){       /*Checks if the drone is finally above the island. If it is, move to Phase 2 */
-                logger.info("** The island has been found!!");
                 this.drone.updatePhase(State.PHASE2);       /*Update the phase of the drone */
 
                 /*Records the creek if one was found */
                 if (!data.get(2).equals("NULL")) {
                     this.spots.markCreek(data.get(2), this.drone.getLocation());
                 }
+
                 response = action.scan();
                 return response;
             }
@@ -92,8 +124,7 @@ public class IslandFinder{
             else{
                 response = action.scan();
                 return response;
-            }
-            
+            }  
         }
     }
 

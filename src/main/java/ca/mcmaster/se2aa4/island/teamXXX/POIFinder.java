@@ -23,7 +23,11 @@ public class POIFinder{
 
     private State state = State.PHASE2_IN_BOUND;
 
-    private Direction nextTurn = Direction.RIGHT;             /*This field holds what direction the drone should turn next with respect to it's current direction */
+    private State poiFound = State.NONE_FOUND;
+
+    private Direction nextTurn = Direction.RIGHT;         /*This field holds what direction the drone should turn next with respect to it's current direction */
+
+    private int echoInterval = 0;
 
     public POIFinder(Drone drone, POI spots){
         this.drone = drone;
@@ -36,10 +40,17 @@ public class POIFinder{
 
         /*Applying the cost of the last action to the battery of the drone */
         this.drone.updateBattery(Integer.parseInt(data.get(0)));
+        
+        /*Checks if both the creek and the emergency site have been found */
+        if (poiFound == State.BOTH_FOUND){
+            logger.info("** Drone battery: {}",this.drone.getBattery());
+            return action.stop();
+        }
 
         /*If the drone's battery is less than 25, it's better to just return to base
          * than try any other actions */
-        if (this.drone.getBattery() < 25){
+        if (this.drone.getBattery() < 20){
+            logger.info("** Drone battery: {}",this.drone.getBattery());
             logger.info("** Drone battery died before exploration finished");
             return action.stop();
         }
@@ -65,25 +76,54 @@ public class POIFinder{
         }
 
         else{
+            /*Echo in facing direction after every ten movements */
+            if (echoInterval == 10){
+                response = action.echo(this.drone.getDirection(), Direction.FRONT);
+                echoInterval = 0;
+                return response;
+            }
+
+            if (lastOp == Operation.ECHO && Integer.parseInt(data.get(1)) <= 5 && data.get(2).equals("OUT_OF_RANGE")){
+                this.state = State.PHASE2_ON_EDGE;
+            }
+        
             if (this.state == State.PHASE2_IN_BOUND){
 
                 if (lastOp == Operation.SCAN){
 
                     if (!data.get(2).equals("NULL")){           /*A creek has been found */
                         logger.info("** Creek found");
+
                         this.spots.markCreek(data.get(2), this.drone.getLocation());
                         this.drone.flyUpdateLocation();         /*Updating the drone's coordinates */
+                        
+                        /*Updating the number of POI found */
+                        if (poiFound == State.NONE_FOUND || poiFound == State.CREEK_FOUND){ 
+                            poiFound = State.CREEK_FOUND;
+                        }
+                        else{
+                            poiFound = State.BOTH_FOUND;
+                        }
+                        echoInterval += 1;
                         return action.fly();
                     }
 
                     if (!data.get(3).equals("NULL")){           /*An emergency site has been found */
                         this.spots.markSite(data.get(3), this.drone.getLocation());
                         logger.info("** Emergency site found");
-                        logger.info("** Battery level: {}",this.drone.getBattery());
-                        return action.stop();
+                        
+                         /*Updating the number of POI found */
+                        if (poiFound == State.NONE_FOUND){ 
+                            poiFound = State.SITE_FOUND;
+                        }
+                        else{
+                            poiFound = State.BOTH_FOUND;
+                        }
+                        echoInterval += 1;
+                        return action.fly();
                     }
-
-                    if (data.get(1).equals("OCEAN")){           /*The drone is on the edge of land and ocean */
+                    /*The drone is on the edge of land and ocean */
+                    if (data.get(1).equals("OCEAN")){           
                         this.state = State.PHASE2_ON_EDGE;      /*Change state */
                         response = action.echo(this.drone.getDirection(), Direction.FRONT);
                         return response;
@@ -91,6 +131,7 @@ public class POIFinder{
 
                     else{
                         response = action.fly();
+                        echoInterval += 1;
                         this.drone.flyUpdateLocation();     /*Updating the drone's coordinates */
                         return response;
                     }
@@ -109,15 +150,17 @@ public class POIFinder{
                     this.state = State.PHASE2_OUT_OF_BOUND;     
 
                     response = action.heading(this.drone.getDirection(), nextTurn);
+                    echoInterval += 1;
 
                     this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
-                    this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+                    //this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
 
                     return response;
                 }
                 else{
                     /*The drone was just flying over water that is on the island so it can just keep flying in that direction */
                     response = action.fly();
+                    echoInterval += 1;
                     this.drone.flyUpdateLocation();
                     this.state = State.PHASE2_IN_BOUND;     /*The drone is still in-bound */
                     return response;
@@ -127,9 +170,10 @@ public class POIFinder{
             else{       /*The drone is now outside the range of the island */
 
                 response = action.heading(this.drone.getDirection(), nextTurn);     /*Turn the drone one more time */
+                echoInterval += 1;
 
                 this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));
-                this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+                //this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
 
                 /*ALternating between turning left and turning right */
                 nextTurn = compass.swap(nextTurn);

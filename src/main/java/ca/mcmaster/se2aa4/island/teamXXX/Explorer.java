@@ -29,7 +29,7 @@ public class Explorer implements IExplorerRaid {
     private POIFinder poiSearch;
     private POI spots;
 
-    private Operation prevOp = Operation.FLY;
+    private Operation prevOp = Operation.NONE;
     private Report report = new BasicReport(0);
     private ReportReader reader = new ReportReader();
 
@@ -41,7 +41,7 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
 
-        drone = new Drone(batteryLevel, direction, State.PHASE1);
+        drone = new Drone(batteryLevel, direction, State.PHASE0);
         spots = new POI();
         islandSearch = new IslandFinder(drone, spots);
         poiSearch = new POIFinder(drone, spots);
@@ -51,7 +51,10 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        if (drone.getPhase() == State.PHASE1){
+        if (drone.getPhase() == State.PHASE0){
+            decision = islandSearch.fixStartingPosition(report,prevOp);
+        }
+        else if (drone.getPhase() == State.PHASE1){
             decision = islandSearch.find(report,prevOp);
         }
         else{
@@ -78,8 +81,8 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String deliverFinalReport() 
     {   
-        System.out.println("Island found");
-        return "CreekId: " + spots.getCreekId() + "EmeregencySite: " + spots.getSiteId();
+        
+        return spots.getCreekId() ;
     }
 
 }

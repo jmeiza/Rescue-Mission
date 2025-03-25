@@ -52,6 +52,7 @@ public class Drone {
 
     public void turnUpdateLocation(Direction nextDir){
         manager.turnUpdateLocation(this.curDir, nextDir, this.location);
+        this.curDir = nextDir;
     }
 
 

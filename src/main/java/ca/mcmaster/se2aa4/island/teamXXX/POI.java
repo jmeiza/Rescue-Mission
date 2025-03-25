@@ -7,10 +7,12 @@ import java.util.List;
 public class POI {
     private List<Creek> creeks = new ArrayList<>();
     private EmergencySite site;
+    private int noOfCreeks = 0;
 
 
     public void markCreek(String id, int[] location){
         this.creeks.add(new Creek(id, location));
+        noOfCreeks += 1;
     }
 
     public void markSite(String id, int[] location){
@@ -18,7 +20,7 @@ public class POI {
     }
 
     public String getCreekId(){
-        return this.creeks.get(0).getId();
+        return this.creeks.get(noOfCreeks-1).getId();
     }
 
     public String getSiteId(){

@@ -1,6 +1,9 @@
 package main.java.ca.mcmaster.se2aa4.island.teamXXX;
 
 public enum State {
+    
+    PHASE0,
+
     PHASE1,     /*Rperesents looking for the island */
 
     PHASE2,     /*Represents searching the island for the POI */
@@ -18,4 +21,13 @@ public enum State {
     PHASE2_ON_EDGE,         /*The drone is on the edge of the island */
 
     PHASE2_OUT_OF_BOUND,    /*The drone is no longer above the island */
+
+    /*Number of POI found */
+    NONE_FOUND,                 
+
+    SITE_FOUND,
+
+    CREEK_FOUND,
+
+    BOTH_FOUND
 }
