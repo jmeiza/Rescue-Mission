@@ -9,8 +9,7 @@ This product is an _exploration command center_ for the [Island](https://ace-des
 
 ### Strategy description
 
-The exploration strategy is to first locate the coast and follow the coast line till a creek is spotted. From there, the drone is programmed to fly towards the middle of the island and spiral out untill it scans
-the emergency site. Once both are located, it flys back to the base with the remaining battery it has left.
+The exploration strategy is to first locate the coast and find where the island is relative to the drone. once there, preforming a grid search of the island occurs untill both the emergency site and a creek is located where the drone stops and returns to base.
 
 ## How to compile, run and deploy
 
