@@ -1,6 +1,5 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
-import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,15 +8,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import eu.ace_design.island.bot.IExplorerRaid;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.BasicReport;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Drone;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.IslandFinder;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Report;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Operation;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.POIFinder;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.ReportReader;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.State;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.POI;
 
 
 public class Explorer implements IExplorerRaid {
@@ -31,14 +21,14 @@ public class Explorer implements IExplorerRaid {
 
     private Operation prevOp = Operation.NONE;
     private Report report = new BasicReport(0);
-    private ReportReader reader = new ReportReader();
+    private final ReportReader reader = new ReportReader();
 
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
-        String direction = info.getString("heading");
+        String direction = info.getString(Constants.HEADING);
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(batteryLevel, direction, State.PHASE0);
@@ -51,23 +41,24 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        if (drone.getPhase() == State.PHASE0){
-            decision = islandSearch.fixStartingPosition(report,prevOp);
-        }
-        else if (drone.getPhase() == State.PHASE1){
-            decision = islandSearch.find(report,prevOp);
-        }
-        else{
+        if (null == drone.getPhase()){
             decision = poiSearch.find(report, prevOp);
         }
+        else decision = switch (drone.getPhase()) {
+            case PHASE0 -> islandSearch.fixStartingPosition(report,prevOp);
+            case PHASE1 -> islandSearch.find(report,prevOp);
+            default -> poiSearch.find(report, prevOp);
+        };
         
 
-        String action = decision.getString("action");
-        if(action.equals("scan")){prevOp = Operation.SCAN;}
-        else if (action.equals("fly")){ prevOp = Operation.FLY;}
-        else if (action.equals("heading")){prevOp = Operation.HEADING;}
-        else if (action.equals("echo")){prevOp = Operation.ECHO;}
-        else {prevOp = Operation.STOP;}
+        String action = decision.getString(Constants.ACTION);
+        prevOp = switch (action) {
+            case Constants.SCAN -> Operation.SCAN;
+            case Constants.FLY -> Operation.FLY;
+            case Constants.HEADING -> Operation.HEADING;
+            case Constants.ECHO -> Operation.ECHO;
+            default -> Operation.STOP;
+        };
 
         return decision.toString();
     }   

@@ -1,26 +1,21 @@
-package main.java.ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.json.JSONObject;
 
 /*THIS CLASS IMPLEMENTS THE ALGORITHM THAT FINDS THE ISLAND */
 public class IslandFinder{
 
-    private final Logger logger = LogManager.getLogger();
-
     private Action action;
 
-    private Drone drone;
+    private final Drone drone;
 
-    private POI spots;
-
-    private Compass compass = new Compass();
+    private final POI spots;
 
     private State state = State.PHASE1_ISLAND_SEARCH;
 
-    private Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
+    private final Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
 
     private int echoCounter = 0;
 
@@ -48,15 +43,11 @@ public class IslandFinder{
                 echoCounter++;
             }
             else{
-                if ((echoCounter-1)%3 == 0){
-                    response = action.fly();
-                }
-                else if ((echoCounter-1)%3 == 1){
-                    response = action.heading(this.drone.getDirection(),next[1]);
-                }
-                else {
-                    response = action.heading(this.drone.getDirection(), next[2]);
-                }
+                response = switch ((echoCounter-1)%3) {
+                    case 0 -> action.fly();
+                    case 1 -> action.heading(this.drone.getDirection(),next[1]);
+                    default -> action.heading(this.drone.getDirection(), next[2]);
+                };
                 this.drone.updatePhase(State.PHASE1);
                 echoCounter = 0;
             }
@@ -89,8 +80,8 @@ public class IslandFinder{
                     }
                     else{
                         response = action.heading(this.drone.getDirection(),next[(echoCounter-1)%3]);       /*Turning to where the island is */
-                        this.drone.turnUpdateLocation(converter(response.getJSONObject("parameters").getString("direction")));  /*Updating the drone's coordinates */
-                        //this.drone.setDirection(converter(response.getJSONObject("parameters").getString("direction")));
+                        this.drone.turnUpdateLocation(converter(response.getJSONObject(Constants.PARAMETERS).getString(Constants.DIRECTION)));  /*Updating the drone's coordinates */
+                        //this.drone.setDirection(converter(response.getJSONObject(Constants.PARAMETERS).getString(Constants.DIRECTION)));
                     }
                     this.state = State.PHASE1_ISLAND_SIGHTED;       /*Changing state */
                     return response;
@@ -129,17 +120,11 @@ public class IslandFinder{
     }
 
     private Direction converter(String str){
-        if (str.equals("N")){
-            return Direction.NORTH;
-        }
-        else if (str.equals("E")){
-            return Direction.EAST;
-        }
-        else if (str.equals("W")){
-            return Direction.WEST;
-        }
-        else{
-            return Direction.SOUTH;
-        }
+        return switch (str) {
+            case "N" -> Direction.NORTH;
+            case "E" -> Direction.EAST;
+            case "W" -> Direction.WEST;
+            default -> Direction.SOUTH;
+        };
     }
 }

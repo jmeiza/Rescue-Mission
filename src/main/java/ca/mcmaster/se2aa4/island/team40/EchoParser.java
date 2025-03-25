@@ -1,9 +1,6 @@
-package main.java.ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
 import org.json.JSONObject;
-import org.json.JSONArray;
-import java.util.List;
-import java.util.ArrayList;
 
 /*THIS CLASS IS USED TO PARSE THE RESPONSE OF AN ECHO OPERATION */
 public class EchoParser implements Parser{

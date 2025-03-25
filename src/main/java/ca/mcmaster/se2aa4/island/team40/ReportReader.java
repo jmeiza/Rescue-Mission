@@ -1,4 +1,4 @@
-package main.java.ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
 import org.json.JSONObject;
 
@@ -9,17 +9,23 @@ public class ReportReader {
     private Parser parser;
 
     public Report read(JSONObject response, Operation op){
-        if (op == Operation.SCAN){
-            parser = new ScanParser();
-            return parser.parse(response);
-        }
-        else if (op == Operation.ECHO){
-            parser = new EchoParser();
-            return parser.parse(response);
-        }
-        else {
+        if (null == op){
             parser = new BasicParser();
             return parser.parse(response);
+        }
+        else switch (op) {
+            case SCAN -> {
+                parser = new ScanParser();
+                return parser.parse(response);
+            }
+            case ECHO -> {
+                parser = new EchoParser();
+                return parser.parse(response);
+            }
+            default -> {
+                parser = new BasicParser();
+                return parser.parse(response);
+            }
         }
     } 
 }
