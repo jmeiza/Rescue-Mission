@@ -1,4 +1,4 @@
-package main.java.ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
 /*THIS CLASS IS USED TO UPDATE FIELDS OF A DRONE */
 public class DroneManager {

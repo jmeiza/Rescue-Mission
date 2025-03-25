@@ -1,6 +1,5 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.team40;
 
-import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,15 +8,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import eu.ace_design.island.bot.IExplorerRaid;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.BasicReport;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Drone;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.IslandFinder;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Report;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.Operation;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.POIFinder;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.ReportReader;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.State;
-import main.java.ca.mcmaster.se2aa4.island.teamXXX.POI;
 
 
 public class Explorer implements IExplorerRaid {
