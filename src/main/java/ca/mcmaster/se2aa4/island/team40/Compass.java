@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.team40;
 
-/*THIS CLASS HANDLES EVEYRTHIGN RELATED TO DIRECTION */
+/*THIS CLASS HANDLES EVEYRTHING RELATED TO DIRECTION */
 public class Compass {
     
     /*This method returns the same cardinality of whatever cardinality it is fed */

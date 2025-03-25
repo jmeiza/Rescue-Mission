@@ -13,18 +13,18 @@ public class Action {
         Compass side = new Compass();
 
         if (next == Direction.LEFT){
-            parameters.put("direction",side.leftDirection(cur));
+            parameters.put(Constants.DIRECTION,side.leftDirection(cur));
         }
         else if (next == Direction.RIGHT){
-            parameters.put("direction",side.rightDirection(cur));
+            parameters.put(Constants.DIRECTION,side.rightDirection(cur));
         }
         else{
-            parameters.put("direction",side.frontDirection(cur));
+            parameters.put(Constants.DIRECTION,side.frontDirection(cur));
         }
 
         decision = new JSONObject();
-        decision.put("action","echo");
-        decision.put("parameters",parameters);
+        decision.put(Constants.ACTION,Constants.ECHO);
+        decision.put(Constants.PARAMETERS,parameters);
 
         return decision;
     }
@@ -36,15 +36,15 @@ public class Action {
         Compass side = new Compass();
 
         if (next == Direction.LEFT){
-            parameters.put("direction",side.leftDirection(cur));
+            parameters.put(Constants.DIRECTION,side.leftDirection(cur));
         }
         else {
-            parameters.put("direction",side.rightDirection(cur));
+            parameters.put(Constants.DIRECTION,side.rightDirection(cur));
         }
         
         decision = new JSONObject();
-        decision.put("action","heading");
-        decision.put("parameters",parameters);
+        decision.put(Constants.ACTION,Constants.HEADING);
+        decision.put(Constants.PARAMETERS,parameters);
 
         return decision;
     }
@@ -52,21 +52,21 @@ public class Action {
 
     public JSONObject fly(){
         decision = new JSONObject();
-        decision.put("action","fly");
+        decision.put(Constants.ACTION,"fly");
         return decision;
     }
 
 
     public JSONObject scan(){
         decision = new JSONObject();
-        decision.put("action","scan");
+        decision.put(Constants.ACTION,"scan");
         return decision;
     }
 
 
     public JSONObject stop(){
         decision = new JSONObject();
-        decision.put("action","stop");
+        decision.put(Constants.ACTION,"stop");
         return decision;
     }
 }

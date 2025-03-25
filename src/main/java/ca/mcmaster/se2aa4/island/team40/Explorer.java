@@ -28,7 +28,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
-        String direction = info.getString("heading");
+        String direction = info.getString(Constants.HEADING);
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(batteryLevel, direction, State.PHASE0);
@@ -52,11 +52,11 @@ public class Explorer implements IExplorerRaid {
         }
         
 
-        String action = decision.getString("action");
-        if(action.equals("scan")){prevOp = Operation.SCAN;}
-        else if (action.equals("fly")){ prevOp = Operation.FLY;}
-        else if (action.equals("heading")){prevOp = Operation.HEADING;}
-        else if (action.equals("echo")){prevOp = Operation.ECHO;}
+        String action = decision.getString(Constants.ACTION);
+        if(action.equals(Constants.SCAN)){prevOp = Operation.SCAN;}
+        else if (action.equals(Constants.FLY)){ prevOp = Operation.FLY;}
+        else if (action.equals(Constants.HEADING)){prevOp = Operation.HEADING;}
+        else if (action.equals(Constants.ECHO)){prevOp = Operation.ECHO;}
         else {prevOp = Operation.STOP;}
 
         return decision.toString();
