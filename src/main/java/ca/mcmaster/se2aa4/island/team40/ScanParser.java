@@ -1,9 +1,8 @@
 package ca.mcmaster.se2aa4.island.team40;
 
-import org.json.JSONObject;
 import org.json.JSONArray;
-import java.util.List;
-import java.util.ArrayList;
+import org.json.JSONObject;
+
 
 /*THIS CLASS IS RESPONSIBLE FOR IMPLEMENTING THE MECHANISM FOR PARSING 
  * THE REPSONSE OF THE SCAN OPERATION

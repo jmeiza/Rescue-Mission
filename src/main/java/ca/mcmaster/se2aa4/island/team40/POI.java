@@ -5,7 +5,7 @@ import java.util.List;
 
 /*THIS CLASS STORES INFORMATION ABOUT THE POINTS OF INTERESTS */
 public class POI {
-    private List<Creek> creeks = new ArrayList<>();
+    private final List<Creek> creeks = new ArrayList<>();
     private EmergencySite site;
     private int noOfCreeks = 0;
 

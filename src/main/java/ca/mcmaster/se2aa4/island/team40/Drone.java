@@ -1,15 +1,13 @@
 package ca.mcmaster.se2aa4.island.team40;
 
-import org.json.JSONObject;
-
 /*THIS CLASS HOLDS ALL NECESSARY INFORMATION ABOUT THE DRONE */
 public class Drone {
 
     private State curPhase;
     private int battery;
     private Direction curDir;
-    private Coordinate location;
-    private DroneManager manager = new DroneManager();      /*This objects manages some operations for the drone */
+    private final Coordinate location;
+    private final DroneManager manager = new DroneManager();      /*This objects manages some operations for the drone */
 
     public Drone(int battery, String direction, State state){
         this.battery = battery;

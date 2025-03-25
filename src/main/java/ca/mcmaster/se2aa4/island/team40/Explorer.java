@@ -21,7 +21,7 @@ public class Explorer implements IExplorerRaid {
 
     private Operation prevOp = Operation.NONE;
     private Report report = new BasicReport(0);
-    private ReportReader reader = new ReportReader();
+    private final ReportReader reader = new ReportReader();
 
     @Override
     public void initialize(String s) {

@@ -7,12 +7,13 @@ import java.util.List;
  * BOTH OF THEM HAVE A RESPONSE THAT IS STRUCTURED THE SAME WAY
  */
 public class BasicReport implements Report {
-    private int cost;
+    private final int cost;
 
     public BasicReport(int cost){
         this.cost = cost;
     }
 
+    @Override
     public List<String> getInfo(){
         List<String> output = new ArrayList<>();
 

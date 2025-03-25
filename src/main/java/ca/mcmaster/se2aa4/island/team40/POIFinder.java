@@ -14,11 +14,11 @@ public class POIFinder{
 
     private JSONObject response;
 
-    private Drone drone;
+    private final Drone drone;
 
-    private POI spots;          /*Represents the object used to store the location of the sites of interest */
+    private final POI spots;          /*Represents the object used to store the location of the sites of interest */
 
-    private Compass compass = new Compass();
+    private final Compass compass = new Compass();
 
     private State phase = State.PHASE2_START;           
 

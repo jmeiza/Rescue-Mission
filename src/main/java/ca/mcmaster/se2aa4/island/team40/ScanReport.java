@@ -5,10 +5,10 @@ import java.util.List;
 
 /*THIS CLASS HOLD THE RESPONSE OF A SCAN OPERATION */
 public class ScanReport implements Report{
-    private int cost;
-    private String creekId;
-    private String siteId;
-    private String biome;
+    private final int cost;
+    private final String creekId;
+    private final String siteId;
+    private final String biome;
 
     public ScanReport(int cost, String ocean, String creekId, String siteId) {
         this.cost = cost;

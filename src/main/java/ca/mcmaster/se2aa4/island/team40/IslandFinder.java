@@ -2,26 +2,20 @@ package ca.mcmaster.se2aa4.island.team40;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 /*THIS CLASS IMPLEMENTS THE ALGORITHM THAT FINDS THE ISLAND */
 public class IslandFinder{
 
-    private final Logger logger = LogManager.getLogger();
-
     private Action action;
 
-    private Drone drone;
+    private final Drone drone;
 
-    private POI spots;
-
-    private Compass compass = new Compass();
+    private final POI spots;
 
     private State state = State.PHASE1_ISLAND_SEARCH;
 
-    private Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
+    private final Direction[] next = {Direction.FRONT, Direction.LEFT, Direction.RIGHT};
 
     private int echoCounter = 0;
 

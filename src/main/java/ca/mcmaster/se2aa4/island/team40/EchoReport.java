@@ -1,14 +1,13 @@
 package ca.mcmaster.se2aa4.island.team40;
 
 import java.util.ArrayList;
-import org.json.JSONObject;
 import java.util.List;
 
 /*THIS CLASS IS USED TO HOLD THE RESPONSE OF AN ECHO OPERATION */
 public class EchoReport implements Report {
-    private int cost;
-    private int range;
-    private String found;
+    private final int cost;
+    private final int range;
+    private final String found;
     List<String> output;        /*[COST, RANGE, FOUND] */
 
     public EchoReport(int cost, int range, String found){
