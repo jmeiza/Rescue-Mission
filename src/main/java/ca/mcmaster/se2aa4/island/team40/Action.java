@@ -12,14 +12,13 @@ public class Action {
         JSONObject parameters = new JSONObject();
         Compass side = new Compass();
 
-        if (next == Direction.LEFT){
-            parameters.put(Constants.DIRECTION,side.leftDirection(cur));
-        }
-        else if (next == Direction.RIGHT){
-            parameters.put(Constants.DIRECTION,side.rightDirection(cur));
-        }
-        else{
+        if (null == next){
             parameters.put(Constants.DIRECTION,side.frontDirection(cur));
+        }
+        else switch (next) {
+            case LEFT -> parameters.put(Constants.DIRECTION,side.leftDirection(cur));
+            case RIGHT -> parameters.put(Constants.DIRECTION,side.rightDirection(cur));
+            default -> parameters.put(Constants.DIRECTION,side.frontDirection(cur));
         }
 
         decision = new JSONObject();
@@ -52,14 +51,14 @@ public class Action {
 
     public JSONObject fly(){
         decision = new JSONObject();
-        decision.put(Constants.ACTION,"fly");
+        decision.put(Constants.ACTION,Constants.FLY);
         return decision;
     }
 
 
     public JSONObject scan(){
         decision = new JSONObject();
-        decision.put(Constants.ACTION,"scan");
+        decision.put(Constants.ACTION,Constants.SCAN);
         return decision;
     }
 

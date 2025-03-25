@@ -49,15 +49,11 @@ public class IslandFinder{
                 echoCounter++;
             }
             else{
-                if ((echoCounter-1)%3 == 0){
-                    response = action.fly();
-                }
-                else if ((echoCounter-1)%3 == 1){
-                    response = action.heading(this.drone.getDirection(),next[1]);
-                }
-                else {
-                    response = action.heading(this.drone.getDirection(), next[2]);
-                }
+                response = switch ((echoCounter-1)%3) {
+                    case 0 -> action.fly();
+                    case 1 -> action.heading(this.drone.getDirection(),next[1]);
+                    default -> action.heading(this.drone.getDirection(), next[2]);
+                };
                 this.drone.updatePhase(State.PHASE1);
                 echoCounter = 0;
             }
@@ -130,17 +126,11 @@ public class IslandFinder{
     }
 
     private Direction converter(String str){
-        if (str.equals("N")){
-            return Direction.NORTH;
-        }
-        else if (str.equals("E")){
-            return Direction.EAST;
-        }
-        else if (str.equals("W")){
-            return Direction.WEST;
-        }
-        else{
-            return Direction.SOUTH;
-        }
+        return switch (str) {
+            case "N" -> Direction.NORTH;
+            case "E" -> Direction.EAST;
+            case "W" -> Direction.WEST;
+            default -> Direction.SOUTH;
+        };
     }
 }

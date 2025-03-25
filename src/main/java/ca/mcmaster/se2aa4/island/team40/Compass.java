@@ -5,50 +5,41 @@ public class Compass {
     
     /*This method returns the same cardinality of whatever cardinality it is fed */
     public String frontDirection(Direction dir){
-        if (dir == Direction.EAST){
-            return "E";
-        }
-        else if (dir == Direction.WEST){
-            return "W";
-        }
-        else if (dir == Direction.NORTH){
-            return "N";
-        }
-        else {
+        if (null == dir){
             return "S";
         }
+        else return switch (dir) {
+            case EAST -> "E";
+            case WEST -> "W";
+            case NORTH -> "N";
+            default -> "S";
+        };
     }
 
     /*This method returns the left cardinality of whatever cardinality it is fed */
     public String leftDirection(Direction dir){
-        if (dir == Direction.EAST){
-            return "N";
-        }
-        else if (dir == Direction.WEST){
-            return "S";
-        }
-        else if (dir == Direction.NORTH){
-            return "W";
-        }
-        else {
+        if (null == dir){
             return "E";
         }
+        else return switch (dir) {
+            case EAST -> "N";
+            case WEST -> "S";
+            case NORTH -> "W";
+            default -> "E";
+        };
     }
 
     /*This method returns the rights cardinality of whatever cardinality it is fed */
     public String rightDirection(Direction dir){
-        if (dir == Direction.EAST){
-            return "S";
-        }
-        else if (dir ==  Direction.WEST){
-            return "N";
-        }
-        else if (dir ==  Direction.NORTH){
-            return "E";
-        }
-        else {
+        if (null == dir){
             return "W";
         }
+        else return switch (dir) {
+            case EAST -> "S";
+            case WEST -> "N";
+            case NORTH -> "E";
+            default -> "W";
+        };
     }
 
     /*This method just swaps relative direction from left to right and vice versa */

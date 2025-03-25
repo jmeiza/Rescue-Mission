@@ -41,23 +41,24 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        if (drone.getPhase() == State.PHASE0){
-            decision = islandSearch.fixStartingPosition(report,prevOp);
-        }
-        else if (drone.getPhase() == State.PHASE1){
-            decision = islandSearch.find(report,prevOp);
-        }
-        else{
+        if (null == drone.getPhase()){
             decision = poiSearch.find(report, prevOp);
         }
+        else decision = switch (drone.getPhase()) {
+            case PHASE0 -> islandSearch.fixStartingPosition(report,prevOp);
+            case PHASE1 -> islandSearch.find(report,prevOp);
+            default -> poiSearch.find(report, prevOp);
+        };
         
 
         String action = decision.getString(Constants.ACTION);
-        if(action.equals(Constants.SCAN)){prevOp = Operation.SCAN;}
-        else if (action.equals(Constants.FLY)){ prevOp = Operation.FLY;}
-        else if (action.equals(Constants.HEADING)){prevOp = Operation.HEADING;}
-        else if (action.equals(Constants.ECHO)){prevOp = Operation.ECHO;}
-        else {prevOp = Operation.STOP;}
+        prevOp = switch (action) {
+            case Constants.SCAN -> Operation.SCAN;
+            case Constants.FLY -> Operation.FLY;
+            case Constants.HEADING -> Operation.HEADING;
+            case Constants.ECHO -> Operation.ECHO;
+            default -> Operation.STOP;
+        };
 
         return decision.toString();
     }   
